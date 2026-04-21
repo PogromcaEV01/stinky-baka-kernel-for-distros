@@ -3,23 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Gra w Truciznę - Globalna Sieć (Własny Serwer)</title>
+<title id="page-title">Gra w Truciznę - Globalna Sieć (Własny Serwer)</title>
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <style>
     * { box-sizing: border-box; }
    .donate-subtle {
         font-size: 0.8em;
-        color: #080; /* Ciemniejszy, przygaszony zielony */
+        color: #080;
         text-decoration: none;
         display: block;
-        text-align: right; /* Wyrównanie do prawej krawędzi */
+        text-align: right;
         margin-top: 20px;
         opacity: 0.7;
         transition: 0.2s;
     }
     
     .donate-subtle:hover { 
-        color: #0f0; /* Rozjaśnia się dopiero po najechaniu */
+        color: #0f0; 
         opacity: 1; 
     }
 
@@ -116,93 +116,300 @@
 </head>
 <body>
 
-<h1>> POJEDYNEK UMYSŁÓW_</h1>
-<div id="status">[ INICJALIZACJA SYSTEMU... ]</div>
+<h1 data-i18n="h1_title">> POJEDYNEK UMYSŁÓW_</h1>
+<div id="status" data-i18n="status_init">[ INICJALIZACJA SYSTEMU... ]</div>
 
 <div id="server-status" class="alert" style="border-left-color: #ff0;">
-    Stan serwera: <span style="color:#ff0;">SPRAWDZANIE / WYBUDZANIE (to może potrwać do 60s)...</span><span class="loading-dots"></span>
+    <span data-i18n="server_status_prefix">Stan serwera:</span> <span id="server-msg" style="color:#ff0;" data-i18n="server_checking">SPRAWDZANIE / WYBUDZANIE (to może potrwać do 60s)...</span><span class="loading-dots" id="server-dots"></span>
 </div>
 
 <div id="lobby-panel" class="panel">
     <div id="disconnect-msg" class="alert error hidden"></div>
 
-    <h3>> TRYB RANKINGOWY</h3>
-    <p>Wybierz poziom przeciwników. System przeszuka globalną sieć.</p>
-    <button class="rank-btn" onclick="searchRank(1)">[ RANGA 1 ] Świeżaki i nowicjusze</button>
-    <button class="rank-btn" onclick="searchRank(2)">[ RANGA 2 ] Amatorzy dedukcji</button>
-    <button class="rank-btn" onclick="searchRank(3)">[ RANGA 3 ] Doświadczeni psychologowie</button>
-    <button class="rank-btn" onclick="searchRank(4)">[ RANGA 4 ] Bezwzględni mistrzowie gry</button>
+    <h3 data-i18n="lobby_h3_1">> TRYB RANKINGOWY</h3>
+    <p data-i18n="lobby_p_1">Wybierz poziom przeciwników. System przeszuka globalną sieć.</p>
+    <button class="rank-btn" onclick="searchRank(1)" data-i18n="rank_1">[ RANGA 1 ] Świeżaki i nowicjusze</button>
+    <button class="rank-btn" onclick="searchRank(2)" data-i18n="rank_2">[ RANGA 2 ] Amatorzy dedukcji</button>
+    <button class="rank-btn" onclick="searchRank(3)" data-i18n="rank_3">[ RANGA 3 ] Doświadczeni psychologowie</button>
+    <button class="rank-btn" onclick="searchRank(4)" data-i18n="rank_4">[ RANGA 4 ] Bezwzględni mistrzowie gry</button>
 
     <div id="queue-status" class="alert hidden" style="color:#ff0; margin-top:10px;">
-        <span id="queue-text">Szukam przeciwnika</span><span class="loading-dots"></span><br>
-        <button onclick="cancelSearch()" style="background:#f00; color:#fff; padding:5px; margin-top:10px;">[ PRZERWIJ ]</button>
+        <span id="queue-text" data-i18n="queue_text">Szukam przeciwnika</span><span class="loading-dots"></span><br>
+        <button onclick="cancelSearch()" style="background:#f00; color:#fff; padding:5px; margin-top:10px;" data-i18n="btn_cancel">[ PRZERWIJ ]</button>
     </div>
 
     <hr style="border-color:#0f0; border-style:dashed; margin: 20px 0;">
 
-    <h3>> GRA PRYWATNA</h3>
-    <button onclick="createRoom()">[ STWÓRZ POKÓJ ]</button>
+    <h3 data-i18n="lobby_h3_2">> GRA PRYWATNA</h3>
+    <button onclick="createRoom()" data-i18n="btn_create_room">[ STWÓRZ POKÓJ ]</button>
     <div id="host-info" class="hidden alert" style="margin: 10px 0;">
-        Twój kod dostępu: <strong id="room-id" style="font-size: 1.5em; color: #ff0;"></strong><br>Czekam na przeciwnika...
+        <span data-i18n="host_info_code">Twój kod dostępu:</span> <strong id="room-id" style="font-size: 1.5em; color: #ff0;"></strong><br><span data-i18n="host_info_waiting">Czekam na przeciwnika...</span>
     </div>
     <br><br>
     <div class="input-group">
-        <input type="text" id="join-id" placeholder="Wpisz kod pokoju znajomego...">
-        <button onclick="joinRoom()">[ DOŁĄCZ ]</button>
+        <input type="text" id="join-id" data-i18n-placeholder="placeholder_join" placeholder="Wpisz kod pokoju znajomego...">
+        <button onclick="joinRoom()" data-i18n="btn_join">[ DOŁĄCZ ]</button>
     </div>
-   <a href="https://ko-fi.com/pogromca" target="_blank" class="donate-subtle">>> wesprzyj_serwer</a>
+   <a href="https://ko-fi.com/pogromca" target="_blank" class="donate-subtle" data-i18n="donate_link">>> wesprzyj_serwer</a>
 </div>
 
 <div id="countdown-panel" class="panel hidden" style="text-align: center;">
-    <h2>POŁĄCZONO!</h2>
-    <p>Przygotuj się. Runda rozpocznie się za:</p>
+    <h2 data-i18n="countdown_h2">POŁĄCZONO!</h2>
+    <p data-i18n="countdown_p">Przygotuj się. Runda rozpocznie się za:</p>
     <div id="start-timer" style="font-size: 3em;">5</div>
 </div>
 
 <div id="game-panel" class="panel hidden">
     <div class="flex-row">
-        <h3 id="role-title">> FAZA: ???</h3>
-        <div class="timer">CZAS: <span id="round-timer">120</span>s</div>
+        <h3 id="role-title" data-i18n="role_title">> FAZA: ???</h3>
+        <div class="timer"><span data-i18n="timer_label">CZAS:</span> <span id="round-timer">120</span>s</div>
     </div>
 
     <div id="action-area">
-        <p id="question-text">Wybierz kubek:</p>
+        <p id="question-text" data-i18n="question_text">Wybierz kubek:</p>
         <div id="cup-options"></div>
 
-        <p>Dlaczego tak wybierasz? (Twoja ukryta kartka):</p>
-        <input type="text" id="reason-input" placeholder="Wpisz swój tok myślenia...">
+        <p data-i18n="reason_label">Dlaczego tak wybierasz? (Twoja ukryta kartka):</p>
+        <input type="text" id="reason-input" data-i18n-placeholder="placeholder_reason" placeholder="Wpisz swój tok myślenia...">
 
         <div style="margin-top: 15px;">
-            <button id="submit-btn" onclick="submitAction()">[ ODDAL KARTKĘ I ZATWIERDŹ ]</button>
-            <div id="op-status" style="color: #555; margin-top: 10px; font-weight: bold;">[ ] Przeciwnik pisze...</div>
+            <button id="submit-btn" onclick="submitAction()" data-i18n="btn_submit">[ ODDAL KARTKĘ I ZATWIERDŹ ]</button>
+            <div id="op-status" style="color: #555; margin-top: 10px; font-weight: bold;" data-i18n="op_status_typing">[ ] Przeciwnik pisze...</div>
         </div>
     </div>
 </div>
 
 <div id="vote-panel" class="panel hidden">
     <div class="flex-row">
-        <h3>> FAZA: WERYFIKACJA</h3>
-        <div class="timer">CZAS: <span id="chat-timer">180</span>s</div>
+        <h3 data-i18n="vote_h3">> FAZA: WERYFIKACJA</h3>
+        <div class="timer"><span data-i18n="timer_label">CZAS:</span> <span id="chat-timer">180</span>s</div>
     </div>
     
     <div id="reveal-area" class="alert"></div>
 
-    <h4>> KANAŁ DYSKUSYJNY</h4>
+    <h4 data-i18n="vote_h4">> KANAŁ DYSKUSYJNY</h4>
     <div id="chat-history"></div>
     <div class="input-group">
-        <input type="text" id="chat-input" placeholder="Napisz wiadomość przed głosowaniem...">
-        <button onclick="sendChat()">[ WYŚLIJ ]</button>
+        <input type="text" id="chat-input" data-i18n-placeholder="placeholder_chat" placeholder="Napisz wiadomość przed głosowaniem...">
+        <button onclick="sendChat()" data-i18n="btn_send_chat">[ WYŚLIJ ]</button>
     </div>
 
     <div id="voting-area" style="margin-top: 20px;">
-        <p><strong>Zdecyduj: Czy sens Waszych kartek jest taki sam?</strong> (Gdy obaj zagłosują, czas mija szybciej)</p>
-        <button id="vote-yes" onclick="submitVote(true)">[ TAK, ZGADZAMY SIĘ ]</button>
-        <button id="vote-no" onclick="submitVote(false)">[ NIE, INNY SENS ]</button>
-        <div id="vote-wait" class="hidden" style="margin-top:10px; color:#ff0; font-weight:bold;">Czekam na głos przeciwnika...</div>
+        <p data-i18n="vote_desc"><strong>Zdecyduj: Czy sens Waszych kartek jest taki sam?</strong> (Gdy obaj zagłosują, czas mija szybciej)</p>
+        <button id="vote-yes" onclick="submitVote(true)" data-i18n="btn_vote_yes">[ TAK, ZGADZAMY SIĘ ]</button>
+        <button id="vote-no" onclick="submitVote(false)" data-i18n="btn_vote_no">[ NIE, INNY SENS ]</button>
+        <div id="vote-wait" class="hidden" style="margin-top:10px; color:#ff0; font-weight:bold;" data-i18n="vote_wait">Czekam na głos przeciwnika...</div>
     </div>
 </div>
 
 <script>
+    // --- SŁOWNIK JĘZYKOWY (i18n) ---
+    const dict = {
+        pl: {
+            page_title: "Gra w Truciznę - Globalna Sieć (Własny Serwer)",
+            h1_title: "> POJEDYNEK UMYSŁÓW_",
+            status_init: "[ INICJALIZACJA SYSTEMU... ]",
+            status_ready: "[ GOTOWY DO POŁĄCZENIA ]",
+            server_status_prefix: "Stan serwera:",
+            server_checking: "SPRAWDZANIE / WYBUDZANIE (to może potrwać do 60s)...",
+            server_offline_timeout: "OFFLINE (Przekroczono czas oczekiwania. Spróbuj odświeżyć stronę)",
+            server_online: "ONLINE (Gotowy do gry)",
+            server_offline_error: "OFFLINE (Błąd połączenia, upewnij się, że serwer działa)",
+            lobby_h3_1: "> TRYB RANKINGOWY",
+            lobby_p_1: "Wybierz poziom przeciwników. System przeszuka globalną sieć.",
+            rank_1: "[ RANGA 1 ] Świeżaki i nowicjusze",
+            rank_2: "[ RANGA 2 ] Amatorzy dedukcji",
+            rank_3: "[ RANGA 3 ] Doświadczeni psychologowie",
+            rank_4: "[ RANGA 4 ] Bezwzględni mistrzowie gry",
+            queue_text: "Szukam przeciwnika",
+            btn_cancel: "[ PRZERWIJ ]",
+            lobby_h3_2: "> GRA PRYWATNA",
+            btn_create_room: "[ STWÓRZ POKÓJ ]",
+            host_info_code: "Twój kod dostępu:",
+            host_info_waiting: "Czekam na przeciwnika...",
+            placeholder_join: "Wpisz kod pokoju znajomego...",
+            btn_join: "[ DOŁĄCZ ]",
+            donate_link: ">> wesprzyj_serwer",
+            countdown_h2: "POŁĄCZONO!",
+            countdown_p: "Przygotuj się. Runda rozpocznie się za:",
+            role_title: "> FAZA: ???",
+            timer_label: "CZAS:",
+            question_text: "Wybierz kubek:",
+            reason_label: "Dlaczego tak wybierasz? (Twoja ukryta kartka):",
+            placeholder_reason: "Wpisz swój tok myślenia...",
+            btn_submit: "[ ODDAL KARTKĘ I ZATWIERDŹ ]",
+            op_status_typing: "[ ] Przeciwnik pisze...",
+            vote_h3: "> FAZA: WERYFIKACJA",
+            vote_h4: "> KANAŁ DYSKUSYJNY",
+            placeholder_chat: "Napisz wiadomość przed głosowaniem...",
+            btn_send_chat: "[ WYŚLIJ ]",
+            vote_desc: "<strong>Zdecyduj: Czy sens Waszych kartek jest taki sam?</strong> (Gdy obaj zagłosują, czas mija szybciej)",
+            btn_vote_yes: "[ TAK, ZGADZAMY SIĘ ]",
+            btn_vote_no: "[ NIE, INNY SENS ]",
+            vote_wait: "Czekam na głos przeciwnika...",
+            
+            // Komunikaty dynamiczne
+            search_network: "Przeszukuję sieć (Ranga {rank})",
+            search_found: "Przeciwnik znaleziony! Nawiązywanie...",
+            queue_empty: "Kolejka pusta. Tworzę poczekalnię, oczekiwanie...",
+            queue_joined: "Ktoś dołączył! Budowanie pokoju...",
+            alert_no_code: "Wpisz kod!",
+            op_status_done: "[✓] Przeciwnik oddał kartkę!",
+            kick_disconnect: "Połączenie zerwane. Przeciwnik uciekł z serwera.",
+            kick_idle: "Przeciwnik wyrzucony za brak aktywności.",
+            error_prefix: "> BŁĄD:",
+            status_offline: "[ OFFLINE ]",
+            kick_timeout: "Czas minął! Brak reakcji.",
+            role_poisoner: "> RUNDA {round}/5 | NALEWASZ TRUCIZNĘ",
+            question_poisoner: "Do którego kubka wlewasz truciznę?",
+            role_drinker: "> RUNDA {round}/5 | WYBIERASZ KUBEK",
+            question_drinker: "Który kubek wybierasz do wypicia?",
+            cup_mine_select: "Kubek bliżej MNIE",
+            cup_yours_select: "Kubek bliżej PRZECIWNIKA",
+            alert_no_cup: "BŁĄD: Musisz wybrać kubek!",
+            alert_no_reason: "BŁĄD: Wpisz swój sens (kartkę)!",
+            btn_submitted: "[ WYSŁANO - CZEKAM ]",
+            res_title: "WYNIK RUNDY:",
+            res_survived: "PRZEŻYCIE (+1)",
+            res_died: "ŚMIERĆ W MĘCZARNIACH",
+            res_poison_pos: "Pozycja trucizny:",
+            res_drunk_pos: "Wypito:",
+            res_scroll_p: "Kartka Rozlewającego:",
+            res_scroll_d: "Kartka Pijącego:",
+            cup_mine_res: "Kubek bliżej Ciebie",
+            cup_yours_res: "Kubek bliżej Przeciwnika",
+            chat_you: "Ty",
+            chat_op: "Przeciwnik",
+            chat_sys: "SYSTEM",
+            sys_agree: "KARTKI SĄ ZGODNE. Dodatkowy punkt dla pijącego!",
+            sys_disagree: "BRAK ZGODY CO DO SENSU. Runda bez bonusa.",
+            vote_next: "Wynik zatwierdzony. Następna faza za",
+            status_connected: "[ POŁĄCZONO ] WYNIKI - Ty: {myScore} | Przeciwnik: {opScore}",
+            end_title: "KONIEC GRY",
+            end_my_score: "Twój wynik:",
+            end_op_score: "Wynik przeciwnika:",
+            end_win: "ZWYCIĘSTWO!",
+            end_lose: "PORAŻKA...",
+            end_draw: "REMIS."
+        },
+        en: {
+            page_title: "Poison Game - Global Network (Custom Server)",
+            h1_title: "> DUEL OF MINDS_",
+            status_init: "[ SYSTEM INITIALIZATION... ]",
+            status_ready: "[ READY TO CONNECT ]",
+            server_status_prefix: "Server status:",
+            server_checking: "CHECKING / WAKING UP (may take up to 60s)...",
+            server_offline_timeout: "OFFLINE (Timeout exceeded. Try refreshing the page)",
+            server_online: "ONLINE (Ready to play)",
+            server_offline_error: "OFFLINE (Connection error, make sure the server is running)",
+            lobby_h3_1: "> RANKED MODE",
+            lobby_p_1: "Choose opponent level. The system will search the global network.",
+            rank_1: "[ RANK 1 ] Freshmen and novices",
+            rank_2: "[ RANK 2 ] Amateurs of deduction",
+            rank_3: "[ RANK 3 ] Experienced psychologists",
+            rank_4: "[ RANK 4 ] Ruthless game masters",
+            queue_text: "Searching for opponent",
+            btn_cancel: "[ CANCEL ]",
+            lobby_h3_2: "> PRIVATE GAME",
+            btn_create_room: "[ CREATE ROOM ]",
+            host_info_code: "Your access code:",
+            host_info_waiting: "Waiting for opponent...",
+            placeholder_join: "Enter friend's room code...",
+            btn_join: "[ JOIN ]",
+            donate_link: ">> support_server",
+            countdown_h2: "CONNECTED!",
+            countdown_p: "Get ready. The round begins in:",
+            role_title: "> PHASE: ???",
+            timer_label: "TIME:",
+            question_text: "Choose a cup:",
+            reason_label: "Why do you choose this? (Your hidden note):",
+            placeholder_reason: "Enter your reasoning...",
+            btn_submit: "[ SUBMIT NOTE AND CONFIRM ]",
+            op_status_typing: "[ ] Opponent is writing...",
+            vote_h3: "> VERIFICATION PHASE",
+            vote_h4: "> DISCUSSION CHANNEL",
+            placeholder_chat: "Write a message before voting...",
+            btn_send_chat: "[ SEND ]",
+            vote_desc: "<strong>Decide: Is the meaning of your notes the same?</strong> (When both vote, time passes faster)",
+            btn_vote_yes: "[ YES, WE AGREE ]",
+            btn_vote_no: "[ NO, DIFFERENT MEANING ]",
+            vote_wait: "Waiting for opponent's vote...",
+            
+            // Dynamic messages
+            search_network: "Searching network (Rank {rank})",
+            search_found: "Opponent found! Establishing...",
+            queue_empty: "Queue empty. Creating lobby, waiting...",
+            queue_joined: "Someone joined! Building room...",
+            alert_no_code: "Enter a code!",
+            op_status_done: "[✓] Opponent submitted their note!",
+            kick_disconnect: "Connection lost. The opponent fled the server.",
+            kick_idle: "Opponent kicked for inactivity.",
+            error_prefix: "> ERROR:",
+            status_offline: "[ OFFLINE ]",
+            kick_timeout: "Time is up! No response.",
+            role_poisoner: "> ROUND {round}/5 | POURING POISON",
+            question_poisoner: "Which cup are you pouring the poison into?",
+            role_drinker: "> ROUND {round}/5 | CHOOSING CUP",
+            question_drinker: "Which cup do you choose to drink?",
+            cup_mine_select: "Cup closer to ME",
+            cup_yours_select: "Cup closer to OPPONENT",
+            alert_no_cup: "ERROR: You must choose a cup!",
+            alert_no_reason: "ERROR: Enter your reasoning (note)!",
+            btn_submitted: "[ SUBMITTED - WAITING ]",
+            res_title: "ROUND RESULT:",
+            res_survived: "SURVIVED (+1)",
+            res_died: "AGONIZING DEATH",
+            res_poison_pos: "Poison position:",
+            res_drunk_pos: "Drank from:",
+            res_scroll_p: "Pourer's Note:",
+            res_scroll_d: "Drinker's Note:",
+            cup_mine_res: "Cup closer to You",
+            cup_yours_res: "Cup closer to Opponent",
+            chat_you: "You",
+            chat_op: "Opponent",
+            chat_sys: "SYSTEM",
+            sys_agree: "NOTES AGREE. Extra point for the drinker!",
+            sys_disagree: "DISAGREEMENT ON MEANING. Round without bonus.",
+            vote_next: "Result confirmed. Next phase in",
+            status_connected: "[ CONNECTED ] SCORE - You: {myScore} | Opponent: {opScore}",
+            end_title: "GAME OVER",
+            end_my_score: "Your score:",
+            end_op_score: "Opponent's score:",
+            end_win: "VICTORY!",
+            end_lose: "DEFEAT...",
+            end_draw: "DRAW."
+        }
+    };
+
+    // Detekcja języka
+    const userLang = navigator.language || navigator.userLanguage;
+    const lang = userLang.startsWith('pl') ? 'pl' : 'en';
+
+    function t(key, params = {}) {
+        let str = dict[lang][key] || key;
+        for (let p in params) str = str.replace(`{${p}}`, params[p]);
+        return str;
+    }
+
+    // Tłumaczenie statycznego HTML po załadowaniu
+    window.addEventListener('DOMContentLoaded', () => {
+        document.title = t('page_title');
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            // Zabezpieczenie dla elementów z zagnieżdżonym HTML (jak vote_desc)
+            if (el.innerHTML.includes('<') && !el.getAttribute('data-i18n').includes('desc')) {
+                 el.innerText = t(key);
+            } else {
+                 el.innerHTML = t(key);
+            }
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            el.placeholder = t(key);
+        });
+        ui.status.innerText = t('status_ready');
+    });
+
     // --- KONFIGURACJA TWOJEGO SERWERA RENDER / RAILWAY ---
     const PEER_CONFIG = {
         host: 'stinky-baka-render-server.onrender.com', // <-- TUTAJ WPISZ SWÓJ ADRES Z RENDERA/RAILWAY (bez https://)
@@ -242,49 +449,46 @@
         queueStatus: document.getElementById('queue-status'), queueText: document.getElementById('queue-text')
     };
 
-    ui.status.innerText = "[ GOTOWY DO POŁĄCZENIA ]";
+    // ui.status.innerText = "[ GOTOWY DO POŁĄCZENIA ]"; - Przeniesione do DOMContentLoaded
 
- // --- MATCHMAKING Z PREFIXAMI (NAPRAWIONY) ---
-    let isMatchmaking = false; // Flaga zapobiegająca błędom przy spamowaniu przycisków
+    // --- MATCHMAKING Z PREFIXAMI (NAPRAWIONY) ---
+    let isMatchmaking = false; 
 
-    function searchRank(rank) {
-        ui.disconnectMsg.classList.add('hidden');
-        ui.queueStatus.classList.remove('hidden');
-        ui.queueText.innerText = `Przeszukuję sieć (Ranga ${rank})`;
-        
-        let queueId = `trucizna_v1_rank_${rank}`;
+    function searchRank(rank) {
+        ui.disconnectMsg.classList.add('hidden');
+        ui.queueStatus.classList.remove('hidden');
+        ui.queueText.innerText = t('search_network', {rank: rank});
+        
+        let queueId = `trucizna_v1_rank_${rank}`;
 
-        if(mmPeer) mmPeer.destroy();
-        mmPeer = new Peer(PEER_CONFIG);
+        if(mmPeer) mmPeer.destroy();
+        mmPeer = new Peer(PEER_CONFIG);
         isMatchmaking = true;
 
-        mmPeer.on('open', () => {
+        mmPeer.on('open', () => {
             if(!isMatchmaking) return;
             
-            let tempConn = mmPeer.connect(queueId, { reliable: true });
+            let tempConn = mmPeer.connect(queueId, { reliable: true });
 
-            // Bezpiecznik czasu (zwiększony na 6s dla słabszych sieci mobilnych)
-            queueTimeout = setTimeout(() => {
-                if(tempConn) tempConn.close();
-                mmPeer.destroy();
-                becomeQueueHost(queueId);
-            }, 6000);
+            queueTimeout = setTimeout(() => {
+                if(tempConn) tempConn.close();
+                mmPeer.destroy();
+                becomeQueueHost(queueId);
+            }, 6000);
 
-            tempConn.on('open', () => {
-                clearTimeout(queueTimeout);
-                ui.queueText.innerText = `Przeciwnik znaleziony! Nawiązywanie...`;
+            tempConn.on('open', () => {
+                clearTimeout(queueTimeout);
+                ui.queueText.innerText = t('search_found');
 
-                tempConn.on('data', (msg) => {
-                    if(msg.type === 'MATCH_FOUND') {
+                tempConn.on('data', (msg) => {
+                    if(msg.type === 'MATCH_FOUND') {
                         isMatchmaking = false;
-                        mmPeer.destroy();
-                        setTimeout(() => joinPrivateMatch(msg.data), 500);
-                    }
-                });
-            });
+                        mmPeer.destroy();
+                        setTimeout(() => joinPrivateMatch(msg.data), 500);
+                    }
+                });
+            });
             
-            // KLUCZOWE: Jeśli host nie istnieje, PeerJS wyrzuci ten błąd od razu.
-            // Dzięki temu nie czekamy w ciemno na timeout, tylko od razu robimy pokój.
             mmPeer.on('error', (err) => {
                 if (err.type === 'peer-unavailable') {
                     clearTimeout(queueTimeout);
@@ -292,44 +496,42 @@
                     becomeQueueHost(queueId);
                 }
             });
-        });
-    }
+        });
+    }
 
-    function becomeQueueHost(queueId) {
+    function becomeQueueHost(queueId) {
         if(!isMatchmaking) return;
-        ui.queueText.innerText = `Kolejka pusta. Tworzę poczekalnię, oczekiwanie...`;
-        
-        mmPeer = new Peer(queueId, PEER_CONFIG);
-        
-        mmPeer.on('connection', (tempConn) => {
-            ui.queueText.innerText = `Ktoś dołączył! Budowanie pokoju...`;
+        ui.queueText.innerText = t('queue_empty');
+        
+        mmPeer = new Peer(queueId, PEER_CONFIG);
+        
+        mmPeer.on('connection', (tempConn) => {
+            ui.queueText.innerText = t('queue_joined');
             
-            // KLUCZOWE: Musimy poczekać aż kanał będzie 'open' żeby wysłać dane
             tempConn.on('open', () => {
                 let secretRoomId = 'match_' + Math.floor(Math.random() * 999999);
 
-                hostPrivateMatch(secretRoomId, () => {
-                    tempConn.send({ type: 'MATCH_FOUND', data: secretRoomId });
+                hostPrivateMatch(secretRoomId, () => {
+                    tempConn.send({ type: 'MATCH_FOUND', data: secretRoomId });
                     isMatchmaking = false;
-                    setTimeout(() => { if(mmPeer) mmPeer.destroy(); }, 2000);
-                });
+                    setTimeout(() => { if(mmPeer) mmPeer.destroy(); }, 2000);
+                });
             });
-        });
+        });
 
-        mmPeer.on('error', (err) => {
-            if(err.type === 'unavailable-id') {
-                // Ktoś inny zajął miejsce ułamek sekundy przed nami, próbujemy ponownie
-                setTimeout(() => searchRank(queueId.slice(-1)), 1000);
-            }
-        });
-    }
+        mmPeer.on('error', (err) => {
+            if(err.type === 'unavailable-id') {
+                setTimeout(() => searchRank(queueId.slice(-1)), 1000);
+            }
+        });
+    }
 
-    function cancelSearch() {
+    function cancelSearch() {
         isMatchmaking = false;
-        clearTimeout(queueTimeout);
-        if(mmPeer) mmPeer.destroy();
-        ui.queueStatus.classList.add('hidden');
-    }
+        clearTimeout(queueTimeout);
+        if(mmPeer) mmPeer.destroy();
+        ui.queueStatus.classList.add('hidden');
+    }
 
     // --- POKOJE PRYWATNE Z PREFIXAMI ---
     function hostPrivateMatch(roomId, onReadyCallback = null) {
@@ -372,7 +574,7 @@
     function joinRoom() {
         ui.disconnectMsg.classList.add('hidden');
         let pin = document.getElementById('join-id').value.trim();
-        if(!pin) return alert("Wpisz kod!");
+        if(!pin) return alert(t('alert_no_code'));
         joinPrivateMatch(pin);
     }
 
@@ -388,11 +590,11 @@
         conn.on('data', (msg) => {
             if(msg.type === 'ACTION') {
                 state.opAction = msg.data;
-                ui.opStatus.innerText = "[✓] Przeciwnik oddał kartkę!";
+                ui.opStatus.innerText = t('op_status_done');
                 ui.opStatus.style.color = "#0f0";
                 checkBothSubmitted();
             }
-            else if(msg.type === 'CHAT') appendChat("Przeciwnik", msg.data, "msg-op");
+            else if(msg.type === 'CHAT') appendChat(t('chat_op'), msg.data, "msg-op");
             else if(msg.type === 'VOTE') { state.opVote = msg.data; checkVotes(); }
             else if(msg.type === 'NEXT_ROUND') { state.round++; start5SecCountdown(); }
             else if(msg.type === 'END_GAME') endGame();
@@ -401,13 +603,13 @@
 
         conn.on('close', () => {
             if(!ui.lobby.classList.contains('hidden')) return;
-            handleKick("Połączenie zerwane. Przeciwnik uciekł z serwera.");
+            handleKick(t('kick_disconnect'));
         });
     }
 
     function kickPlayer(reason) {
         if(conn && conn.open) {
-            conn.send({ type: 'KICK', data: "Przeciwnik wyrzucony za brak aktywności." });
+            conn.send({ type: 'KICK', data: t('kick_idle') });
             setTimeout(() => conn.close(), 500);
         }
         handleKick(reason);
@@ -416,9 +618,9 @@
     function handleKick(reason) {
         clearInterval(timerInterval); clearInterval(chatTimerInterval); hideAll();
         ui.lobby.classList.remove('hidden');
-        ui.disconnectMsg.innerText = `> BŁĄD: ${reason}`;
+        ui.disconnectMsg.innerText = `${t('error_prefix')} ${reason}`;
         ui.disconnectMsg.classList.remove('hidden');
-        ui.status.innerText = "[ OFFLINE ]";
+        ui.status.innerText = t('status_offline');
         state.myScore = 0; state.opScore = 0; state.round = 1;
     }
 
@@ -429,10 +631,10 @@
 
     function start5SecCountdown() {
         hideAll(); ui.countdown.classList.remove('hidden');
-        let t = 5; ui.startTimer.innerText = t;
+        let t_sec = 5; ui.startTimer.innerText = t_sec;
         let iv = setInterval(() => {
-            t--; ui.startTimer.innerText = t;
-            if(t <= 0) { clearInterval(iv); startPlayingPhase(); }
+            t_sec--; ui.startTimer.innerText = t_sec;
+            if(t_sec <= 0) { clearInterval(iv); startPlayingPhase(); }
         }, 1000);
     }
 
@@ -444,25 +646,25 @@
 
         state.myAction = null; state.opAction = null; state.myVote = null; state.opVote = null;
         ui.reasonInput.value = ''; ui.reasonInput.disabled = false; selectedCup = null;
-        ui.submitBtn.disabled = false; ui.submitBtn.innerText = "[ ODDAL KARTKĘ I ZATWIERDŹ ]";
-        ui.opStatus.innerText = "[ ] Przeciwnik pisze..."; ui.opStatus.style.color = "#555";
+        ui.submitBtn.disabled = false; ui.submitBtn.innerText = t('btn_submit');
+        ui.opStatus.innerText = t('op_status_typing'); ui.opStatus.style.color = "#555";
         ui.voteYes.classList.remove('hidden'); ui.voteNo.classList.remove('hidden');
         ui.voteWait.classList.add('hidden'); 
 
         if(state.myRole === 'poisoner') {
-            ui.roleTitle.innerText = `> RUNDA ${state.round}/5 | NALEWASZ TRUCIZNĘ`;
-            document.getElementById('question-text').innerText = "Do którego kubka wlewasz truciznę?";
+            ui.roleTitle.innerText = t('role_poisoner', {round: state.round});
+            document.getElementById('question-text').innerText = t('question_poisoner');
         } else {
-            ui.roleTitle.innerText = `> RUNDA ${state.round}/5 | WYBIERASZ KUBEK`;
-            document.getElementById('question-text').innerText = "Który kubek wybierasz do wypicia?";
+            ui.roleTitle.innerText = t('role_drinker', {round: state.round});
+            document.getElementById('question-text').innerText = t('question_drinker');
         }
 
         let mySideId = isHost ? 'host_side' : 'guest_side';
         let opSideId = isHost ? 'guest_side' : 'host_side';
 
         ui.cupOptions.innerHTML = `
-            <div class="cup-option" id="cup-${mySideId}" onclick="selectCup('${mySideId}')">Kubek bliżej MNIE</div>
-            <div class="cup-option" id="cup-${opSideId}" onclick="selectCup('${opSideId}')">Kubek bliżej PRZECIWNIKA</div>
+            <div class="cup-option" id="cup-${mySideId}" onclick="selectCup('${mySideId}')">${t('cup_mine_select')}</div>
+            <div class="cup-option" id="cup-${opSideId}" onclick="selectCup('${opSideId}')">${t('cup_yours_select')}</div>
         `;
 
         timeLeft = 120; ui.roundTimer.innerText = timeLeft;
@@ -473,7 +675,7 @@
             if(timeLeft <= 0) {
                 clearInterval(timerInterval);
                 if(!state.myAction) {
-                    if(!selectedCup || !ui.reasonInput.value.trim()) kickPlayer("Czas minął! Brak reakcji.");
+                    if(!selectedCup || !ui.reasonInput.value.trim()) kickPlayer(t('kick_timeout'));
                     else submitAction();
                 }
             }
@@ -489,12 +691,12 @@
     }
 
     function submitAction() {
-        if(!selectedCup) return alert("BŁĄD: Musisz wybrać kubek!");
+        if(!selectedCup) return alert(t('alert_no_cup'));
         let reason = ui.reasonInput.value.trim();
-        if(!reason) return alert("BŁĄD: Wpisz swój sens (kartkę)!");
+        if(!reason) return alert(t('alert_no_reason'));
         
         state.myAction = { cup: selectedCup, reason: reason };
-        ui.submitBtn.disabled = true; ui.submitBtn.innerText = "[ WYSŁANO - CZEKAM ]";
+        ui.submitBtn.disabled = true; ui.submitBtn.innerText = t('btn_submitted');
         ui.reasonInput.disabled = true;
 
         conn.send({ type: 'ACTION', data: state.myAction });
@@ -520,13 +722,13 @@
         if(survived && state.myRole === 'drinker') state.myScore++;
         else if(survived && state.myRole === 'poisoner') state.opScore++;
 
-        let resHtml = `<h3>WYNIK RUNDY: ${survived ? '<span style="color:#0f0;">PRZEŻYCIE (+1)</span>' : '<span style="color:#f00;">ŚMIERĆ W MĘCZARNIACH</span>'}</h3>`;
-        resHtml += `<p>Pozycja trucizny: <strong>${getLocalCupName(pAction.cup)}</strong> | Wypito: <strong>${getLocalCupName(dAction.cup)}</strong></p><hr style="border:1px solid #333;">`;
-        resHtml += `<p><strong>Kartka Rozlewającego:</strong> "${pAction.reason}"</p>`;
-        resHtml += `<p><strong>Kartka Pijącego:</strong> "${dAction.reason}"</p>`;
+        let resHtml = `<h3>${t('res_title')} ${survived ? `<span style="color:#0f0;">${t('res_survived')}</span>` : `<span style="color:#f00;">${t('res_died')}</span>`}</h3>`;
+        resHtml += `<p>${t('res_poison_pos')} <strong>${getLocalCupName(pAction.cup)}</strong> | ${t('res_drunk_pos')} <strong>${getLocalCupName(dAction.cup)}</strong></p><hr style="border:1px solid #333;">`;
+        resHtml += `<p><strong>${t('res_scroll_p')}</strong> "${pAction.reason}"</p>`;
+        resHtml += `<p><strong>${t('res_scroll_d')}</strong> "${dAction.reason}"</p>`;
 
         ui.revealArea.innerHTML = resHtml;
-        updateStatus(); ui.voteWait.innerText = "Czekam na głos przeciwnika...";
+        updateStatus(); ui.voteWait.innerText = t('vote_wait');
         
         chatTimeLeft = 180; ui.chatTimer.innerText = chatTimeLeft;
         clearInterval(chatTimerInterval);
@@ -541,13 +743,13 @@
     }
 
     function getLocalCupName(cupId) { 
-        return cupId === (isHost ? 'host_side' : 'guest_side') ? "Kubek bliżej Ciebie" : "Kubek bliżej Przeciwnika";
+        return cupId === (isHost ? 'host_side' : 'guest_side') ? t('cup_mine_res') : t('cup_yours_res');
     }
 
     function sendChat() {
         let msg = ui.chatInput.value.trim();
         if(!msg) return;
-        appendChat("Ty", msg, "msg-me");
+        appendChat(t('chat_you'), msg, "msg-me");
         conn.send({ type: 'CHAT', data: msg });
         ui.chatInput.value = '';
     }
@@ -572,15 +774,15 @@
             clearInterval(chatTimerInterval); ui.chatTimer.innerText = "0";
             
             if(state.myVote === true && state.opVote === true) {
-                appendChat("SYSTEM", "KARTKI SĄ ZGODNE. Dodatkowy punkt dla pijącego!", "msg-sys");
+                appendChat(t('chat_sys'), t('sys_agree'), "msg-sys");
                 if(state.myRole === 'drinker') state.myScore++;
                 else state.opScore++;
-            } else appendChat("SYSTEM", "BRAK ZGODY CO DO SENSU. Runda bez bonusa.", "msg-sys");
+            } else appendChat(t('chat_sys'), t('sys_disagree'), "msg-sys");
 
             updateStatus();
 
             let waitTime = 10;
-            ui.voteWait.innerHTML = `Wynik zatwierdzony. Następna faza za <strong id="next-phase-timer" style="color:#ff0;">${waitTime}</strong>s...`;
+            ui.voteWait.innerHTML = `${t('vote_next')} <strong id="next-phase-timer" style="color:#ff0;">${waitTime}</strong>s...`;
             
             let waitIv = setInterval(() => {
                 waitTime--; let el = document.getElementById('next-phase-timer');
@@ -599,54 +801,55 @@
     }
 
     function updateStatus() { 
-        ui.status.innerText = `[ POŁĄCZONO ] WYNIKI - Ty: ${state.myScore} | Przeciwnik: ${state.opScore}`; 
+        ui.status.innerText = t('status_connected', {myScore: state.myScore, opScore: state.opScore}); 
     }
 
     function endGame() {
         hideAll(); ui.lobby.classList.remove('hidden');
-        let resHtml = `<h2>KONIEC GRY</h2><p>Twój wynik: ${state.myScore}</p><p>Wynik przeciwnika: ${state.opScore}</p>`;
+        let resHtml = `<h2>${t('end_title')}</h2><p>${t('end_my_score')} ${state.myScore}</p><p>${t('end_op_score')} ${state.opScore}</p>`;
         
-        if(state.myScore > state.opScore) resHtml += "<h3 style='color:#0f0'>ZWYCIĘSTWO!</h3>";
-        else if(state.myScore < state.opScore) resHtml += "<h3 style='color:#f00'>PORAŻKA...</h3>";
-        else resHtml += "<h3 style='color:#ff0'>REMIS.</h3>";
+        if(state.myScore > state.opScore) resHtml += `<h3 style='color:#0f0'>${t('end_win')}</h3>`;
+        else if(state.myScore < state.opScore) resHtml += `<h3 style='color:#f00'>${t('end_lose')}</h3>`;
+        else resHtml += `<h3 style='color:#ff0'>${t('end_draw')}</h3>`;
 
         ui.disconnectMsg.innerHTML = resHtml;
         ui.disconnectMsg.classList.remove('hidden', 'error');
         if(conn) conn.close();
     }
-   // --- FUNKCJA SPRAWDZAJĄCA STATUS SERWERA ---
+
+    // --- FUNKCJA SPRAWDZAJĄCA STATUS SERWERA ---
     function checkServerStatus() {
+        const msgSpan = document.getElementById('server-msg');
+        const dotsSpan = document.getElementById('server-dots');
         const statusDiv = document.getElementById('server-status');
         
-        // Tworzymy cichego Peera tylko po to, żeby sprawdzić połączenie
         const pingPeer = new Peer(PEER_CONFIG);
         
-        // Timeout w razie gdyby serwer totalnie nie odpowiadał przez długi czas
         const timeout = setTimeout(() => {
-            statusDiv.innerHTML = 'Stan serwera: <strong style="color:#f00;">OFFLINE (Przekroczono czas oczekiwania. Spróbuj odświeżyć stronę)</strong>';
+            msgSpan.innerHTML = `<strong style="color:#f00;">${t('server_offline_timeout')}</strong>`;
+            dotsSpan.style.display = 'none';
             statusDiv.style.borderLeftColor = '#f00';
             pingPeer.destroy();
-        }, 60000); // 60 sekund na wybudzenie darmowego serwera
+        }, 60000); 
 
-        // Sukces - serwer wstał i odpowiada
         pingPeer.on('open', () => {
             clearTimeout(timeout);
-            statusDiv.innerHTML = 'Stan serwera: <strong style="color:#0f0;">ONLINE (Gotowy do gry)</strong>';
+            msgSpan.innerHTML = `<strong style="color:#0f0;">${t('server_online')}</strong>`;
+            dotsSpan.style.display = 'none';
             statusDiv.style.borderLeftColor = '#0f0';
-            pingPeer.destroy(); // Usuwamy testowe połączenie, nie jest już potrzebne
+            pingPeer.destroy(); 
         });
         
-        // Błąd - serwer wyłączony lub zły adres
         pingPeer.on('error', (err) => {
             if(err.type === 'network' || err.type === 'server-error') {
                 clearTimeout(timeout);
-                statusDiv.innerHTML = 'Stan serwera: <strong style="color:#f00;">OFFLINE (Błąd połączenia, upewnij się, że serwer działa)</strong>';
+                msgSpan.innerHTML = `<strong style="color:#f00;">${t('server_offline_error')}</strong>`;
+                dotsSpan.style.display = 'none';
                 statusDiv.style.borderLeftColor = '#f00';
             }
         });
     }
 
-    // Uruchom sprawdzanie od razu po załadowaniu strony
     window.addEventListener('load', checkServerStatus);
 </script>
 </body>
